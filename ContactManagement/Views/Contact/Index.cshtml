@@ -1,0 +1,89 @@
+﻿@model IEnumerable<ContactManagement.Models.Contact>
+
+@{
+    ViewData["Title"] = "Contact List";
+}
+
+<div id="PlaceHolderHere"></div>
+
+<h3 class="text-center">Contact Management</h3>
+<div class="container">
+    <div class="text-end">
+        <button data-bs-toggle="ajax-modal" data-bs-target="#addContact" data-url="@Url.Action("Create")" style="background-color: transparent; border: none;"><i class="fa-solid fa-circle-plus me-1"></i>New Contact</button>
+    </div>
+</div>
+
+<div class="container text-center">
+    <div class="row">
+        <div class="col p-3 border-end">
+            <div class="card p-3">
+                <form id="searchForm" method="get" action="@Url.Action("Index")">
+                    <label class="text-start" for="searchEmail">Search Email ID</label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search" id="searchEmail" name="searchEmail" aria-label="Recipient's email" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    </div>
+                </form>
+                <label class="text-start" for="">Contact Directory</label>
+                <div class="card-body text-start" style="padding:0;">
+                    <div class="border p-1">
+                        @if (Model != null)
+                        {
+                            <div class="over-auto">
+                            <ul id="contactList" style="list-style-type: none;">
+                                @foreach (var contact in Model)
+                                {
+                                    <div class="d-flex contact-item" style="margin-bottom:8px;" data-email="@contact.Email">
+                                        <div class="col-sm-1">
+                                            <button data-bs-toggle="ajax-modal" data-bs-target="#editContact" data-url="@Url.Action("Edit", new { id = contact.ContactId })" style="border: none; padding: 0; background-color: transparent;" class="d-block"><i class="fa-solid fa-pen-to-square"></i></button>
+                                            <button class="delete-contact" data-id="@contact.ContactId" style="border: none; padding: 0; background-color: transparent; color: indianred;"><i class="fa-solid fa-trash"></i></button>
+                                        </div>
+                                        <div class="col-10">
+                                            <li>@contact.FirstName @contact.LastName <br /> @contact.Email</li>
+                            </div>
+                            <div class="col-sm-2">
+                                <button class="toggle-favorite" data-id="@contact.ContactId" data-favorite="@contact.isFavorite.ToString().ToLower()" style="border: none; padding: 0; background-color: transparent; color: @(contact.isFavorite == true ? "goldenrod" : "gray")"><i class="fa-regular fa-star"></i></button>
+                            </div>
+                        </div>
+                                }
+                    </ul>
+                    </div>
+                        }
+                        else
+                        {
+                            <p>No contacts available.</p>
+                        }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col p-3 text-start">
+    <div class="card p-3">
+        <label class="text-start" for="">Favorite</label>
+        <div class="card-body text-start" style="padding:0;">
+            <div class="border p-1 text-start">
+                        @if (Model != null && Model.Any(c => c.isFavorite == true))
+                        {
+                    <ul style="list-style-type: none;">
+                                @foreach (var favoriteContact in Model.Where(c => c.isFavorite == true))
+                                {
+                            <div class="d-flex" style="margin-bottom:8px;">
+                                <div class="col">
+                            <li>
+                                                @favoriteContact.FirstName @favoriteContact.LastName <br /> @favoriteContact.Email
+                            </li>
+                    </div>
+                </div>
+                                }
+            </ul>
+                        }
+                        else
+                        {
+                            <p>No favorite contacts available.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
